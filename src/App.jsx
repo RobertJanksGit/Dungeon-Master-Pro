@@ -11,32 +11,35 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./protectedRoute";
-// import { monitorAuthState } from "./protectedRoute";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // useEffect(() => {
-  //   return () => monitorAuthState(setLoggedIn);
-  // }, []);
-
+  const [navigateCounter, setNavigateCounter] = useState(-2);
   return (
     <div className="w-screen">
       <Router>
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
             <Route
-              path="/dashboard"
+              path="/login"
               element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
+                <Login
+                  navigateCounter={navigateCounter}
+                  setNavigateCounter={setNavigateCounter}
+                />
               }
-            >
-              <Route index element={<Dashboard />} />
+            />
+            <Route
+              path="/signup"
+              element={
+                <Signup
+                  navigateCounter={navigateCounter}
+                  setNavigateCounter={setNavigateCounter}
+                />
+              }
+            />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

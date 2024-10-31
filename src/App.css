@@ -5,6 +5,11 @@
   text-align: center;
 }
 
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

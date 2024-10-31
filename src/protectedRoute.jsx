@@ -22,10 +22,9 @@ const ProtectedRoute = () => {
   // If not logged in, navigate to login
   if (!loggedIn) {
     return <Navigate to="/login" replace />;
+  } else {
+    return <Outlet />;
   }
-
-  // If logged in, render the requested component
-  return <Outlet />;
 };
 
 export default ProtectedRoute;

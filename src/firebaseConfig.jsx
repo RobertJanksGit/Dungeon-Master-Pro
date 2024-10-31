@@ -35,13 +35,23 @@ const auth = getAuth(firebaseApp);
 //   console.error("error setting persistence:", error);
 // });
 
-const login = async (email, setEmail, password, setPassword) => {
+const login = async (
+  email,
+  setEmail,
+  password,
+  setPassword,
+  setIsFailedLogin
+) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     setEmail("");
     setPassword("");
+    setIsFailedLogin(false);
+    return true;
   } catch (error) {
+    setIsFailedLogin(true);
     console.error("Login error:", error.message);
+    return false;
   }
 };
 
