@@ -1,12 +1,12 @@
 import Header from "../components/Header";
-import Main from "../components/Main";
+import DashboardMain from "../components/DashboardMain";
 import Footer from "../components/Footer";
 
 export default function Dashboard() {
   return (
     <div className="size-full">
       <Header />
-      <Main />
+      <DashboardMain />
       <Footer />
     </div>
   );

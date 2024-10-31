@@ -2,7 +2,7 @@ export default function Footer() {
   return (
     <>
       <>
-        <div className="flex justify-between items-center p-4 bg-gray-800">
+        <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-800 max-w-screen-lg mx-auto">
           <div>
             <h3>ABOUT</h3>
             <button className="border-none bg-transparent">Contact Us</button>

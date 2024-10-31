@@ -8,7 +8,8 @@ const Login = ({ navigateCounter, setNavigateCounter }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
     signup(email, setEmail, password, setPassword);
   };
 

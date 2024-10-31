@@ -1,6 +1,4 @@
-// src/components/Login.js
-import React, { useState } from "react";
-// Import the functions you need from the SDKs you need
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
@@ -10,11 +8,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBkfIFaW7T0Fxvnhe9Udc48rZKuIkEBPRY",
   authDomain: "dungeon-master-pro.firebaseapp.com",
@@ -29,11 +23,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const analytics = getAnalytics(firebaseApp);
 const auth = getAuth(firebaseApp);
-
-//Set persistence
-// setPersistence(auth, browserLocalPersistence).catch((error) => {
-//   console.error("error setting persistence:", error);
-// });
+const db = getFirestore(firebaseApp);
 
 const login = async (
   email,
@@ -62,25 +52,26 @@ const signup = async (email, setEmail, password, setPassword) => {
       email,
       password
     );
+    const user = userCredential.user;
     setEmail("");
     setPassword("");
-    console.log(userCredential);
+    // Create a Firestore document for the user
+    await setDoc(doc(db, "users", user.uid), {
+      prompt: [
+        {
+          role: "system",
+          content:
+            "You are the Dungeon Master in a game of Dungeons & Dragons. Your role is to craft an engaging fantasy story, narrate vivid descriptions, and respond to the player’s actions, questions, and decisions in real time. Start by introducing the setting, characters, and current scenario, and wait for player input before continuing. As the story progresses, be creative, use dramatic flair, and always keep the player’s experience at the center. Make sure to keep the atmosphere mysterious and adventurous. Adjust the storyline or challenges based on player responses, and prompt the player with options when needed. You’re allowed to generate magical events, mythical creatures, and describe the environment with sensory details like sounds, sights, and smells. Encourage the player to explore, interact with characters, and make decisions that will shape their journey. Remember, you are the guide on an epic quest.",
+        },
+      ],
+      createdAt: new Date(),
+    });
+
+    console.log("User registered and Firestore document created!");
   } catch (error) {
     console.error("Signup error", error.message);
   }
 };
-
-// const monitorAuthState = async () => {
-//   onAuthStateChanged(auth, (user) => {
-//     if (!user) {
-//       console.log("User loged in");
-//       setLoggedIn(true);
-//     } else {
-//       console.log("User loged out");
-//       setLoggedIn(false);
-//     }
-//   });
-// };
 
 const logout = () => {
   setTimeout(async () => {
@@ -88,4 +79,4 @@ const logout = () => {
   }, 10);
 };
 
-export { login, signup, logout, auth };
+export { login, signup, logout, auth, db };

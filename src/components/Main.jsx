@@ -16,13 +16,13 @@ export default function Main() {
   return (
     <div>
       <section className="flex justify-center mb-8">
-        <div className="w-[800px] h-[300px] rounded-lg overflow-hidden shadow-lg">
+        <div className="w-full sm:w-[500px] md:w-[700px] lg:w-[800px] h-[200px] sm:h-[300px] md:h-[400px] lg:h-[450px] rounded-lg overflow-hidden shadow-lg mx-auto">
           <Slider {...sliderSettings}>
             <div>
               <img
                 src="../../public/image (3).jpg"
                 alt="Slide 1"
-                className="w-full h-[400px] object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
@@ -36,7 +36,7 @@ export default function Main() {
               <img
                 src="../../public/image (11).jpg"
                 alt="Slide 3"
-                className="w-full h-[450px] object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
