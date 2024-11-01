@@ -3,13 +3,14 @@ import { db } from "../firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useAuth } from "../authContext";
 import axios from "axios";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 
 const DashboardMain = () => {
   const { currentUser } = useAuth();
   const [input, setInput] = useState("");
   const [prompt, setPrompt] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isFetching, setIsFetching] = useState(false); // Track fetch state
+  const [isFetching, setIsFetching] = useState(false);
   const userId = currentUser.uid;
 
   // Fetch existing conversation on mount
@@ -118,7 +119,7 @@ const DashboardMain = () => {
       <form className="p-[20px]" onSubmit={handleSend}>
         <div className="bg-white w-[100%] h-[400px] text-black overflow-y-auto">
           {isFetching ? (
-            <p>Loading...</p> // Show "Loading..." while fetching
+            <p>Loading...</p>
           ) : prompt.length > 0 ? (
             <p
               className={`${
@@ -127,7 +128,7 @@ const DashboardMain = () => {
                   : "text-gray-800"
               }`}
             >
-              {prompt[prompt.length - 1].content}
+              <MarkdownPreview source={prompt[prompt.length - 1].content} />
             </p>
           ) : (
             <p>No conversation history available.</p>
@@ -145,7 +146,7 @@ const DashboardMain = () => {
           <button
             type="submit"
             className="h-10 px-4 bg-blue-600 text-white rounded"
-            disabled={isFetching} // Disable button while fetching
+            disabled={isFetching}
           >
             {isFetching ? "Sending..." : "Send"}
           </button>

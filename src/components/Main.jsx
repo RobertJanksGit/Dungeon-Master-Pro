@@ -1,6 +1,10 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import warlock from "../assets/image (3).jpg";
+import malePaladin from "../assets/image (6).jpg";
+import orc from "../assets/image (11).jpg";
+import femalePaladin from "../assets/image (7).jpg";
 
 export default function Main() {
   const sliderSettings = {
@@ -20,28 +24,28 @@ export default function Main() {
           <Slider {...sliderSettings}>
             <div>
               <img
-                src="../../public/image (3).jpg"
+                src={warlock}
                 alt="Slide 1"
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
               <img
-                src="../../public/image (6).jpg"
+                src={malePaladin}
                 alt="Slide 2"
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
               <img
-                src="../../public/image (11).jpg"
+                src={orc}
                 alt="Slide 3"
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
               <img
-                src="../../public/image (7).jpg"
+                src={femalePaladin}
                 alt="Slide 4"
                 className="w-full h-full object-cover"
               />

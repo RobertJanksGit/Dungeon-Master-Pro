@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { login } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo2.jpg";
 
 const Login = ({ navigateCounter, setNavigateCounter }) => {
   const navigate = useNavigate();
@@ -43,11 +44,7 @@ const Login = ({ navigateCounter, setNavigateCounter }) => {
         >
           ✕
         </button>
-        <img
-          src="../../public/logo2.jpg"
-          className="mx-auto mb-6 w-1/2"
-          alt="Logo"
-        />
+        <img src={logo} className="mx-auto mb-6 w-1/2" alt="Logo" />
         <h2 className="text-white text-2xl mb-4">
           Sign into your Dungeon Master Pro Account
         </h2>
