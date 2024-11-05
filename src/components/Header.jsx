@@ -12,6 +12,7 @@ export default function Header() {
     const { name } = e.target;
     if (name === "/logout") {
       logout();
+      navigate("/");
     } else {
       navigate(name);
     }
@@ -30,27 +31,31 @@ export default function Header() {
           >
             Dashboard
           </button>
-          <button
-            onClick={handleClick}
-            name="/characters"
-            className="border-none bg-transparent text-slate-300"
-          >
-            Characters
-          </button>
-          <button
-            onClick={handleClick}
-            name="/campaigns"
-            className="border-none bg-transparent text-slate-300"
-          >
-            Campaigns
-          </button>
-          <button
-            onClick={handleClick}
-            name="/maps"
-            className="border-none bg-transparent text-slate-300"
-          >
-            Maps
-          </button>
+          {currentUser && (
+            <div>
+              <button
+                onClick={handleClick}
+                name="/characters"
+                className="border-none bg-transparent text-slate-300"
+              >
+                Characters
+              </button>
+              <button
+                onClick={handleClick}
+                name="/campaigns"
+                className="border-none bg-transparent text-slate-300"
+              >
+                Campaigns
+              </button>
+              <button
+                onClick={handleClick}
+                name="/maps"
+                className="border-none bg-transparent text-slate-300"
+              >
+                Maps
+              </button>
+            </div>
+          )}
         </div>
         {!currentUser ? (
           <div className="flex space-x-4">

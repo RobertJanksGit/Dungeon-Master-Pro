@@ -89,7 +89,7 @@ const DashboardMain = () => {
 
     // Update the state immediately with user prompt
     setPrompt((prevPrompt) => [...prevPrompt, userPrompt]);
-    setInput(""); // Clear input immediately
+    setInput("");
 
     try {
       // Send updated prompt including the user's input to the API
@@ -110,7 +110,7 @@ const DashboardMain = () => {
     } catch (error) {
       console.error("Error sending user prompt to API:", error);
     } finally {
-      setIsFetching(false); // Turn off loading indicator
+      setIsFetching(false);
     }
   };
 
@@ -141,7 +141,7 @@ const DashboardMain = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Respond"
-            disabled={isFetching} // Disable input while fetching
+            disabled={isFetching}
           />
           <button
             type="submit"
