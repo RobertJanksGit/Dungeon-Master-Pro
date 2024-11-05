@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -13,31 +13,14 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./protectedRoute";
 
 function App() {
-  const [navigateCounter, setNavigateCounter] = useState(-2);
   return (
     <div className="w-screen">
       <Router>
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route
-              path="/login"
-              element={
-                <Login
-                  navigateCounter={navigateCounter}
-                  setNavigateCounter={setNavigateCounter}
-                />
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <Signup
-                  navigateCounter={navigateCounter}
-                  setNavigateCounter={setNavigateCounter}
-                />
-              }
-            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>

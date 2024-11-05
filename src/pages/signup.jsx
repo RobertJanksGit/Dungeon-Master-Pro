@@ -4,7 +4,7 @@ import { signup } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo2.jpg";
 
-const Login = ({ navigateCounter, setNavigateCounter }) => {
+const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,12 +15,10 @@ const Login = ({ navigateCounter, setNavigateCounter }) => {
   };
 
   const handleClose = () => {
-    navigate(navigateCounter);
-    setNavigateCounter(-1);
+    navigate("/");
   };
 
   const handelSwitch = () => {
-    setNavigateCounter(navigateCounter - 1);
     navigate("/login");
   };
 
