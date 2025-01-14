@@ -50,9 +50,6 @@ const Login = () => {
           Need to create an account? <a onClick={handelSwitch}>Sign up</a>
         </p>
         <form onSubmit={handleLogin} className="space-y-4">
-          {isFailedLogin && (
-            <p className="text-red-600 font-bold">Invalid email or password</p>
-          )}
           <input
             className="text-black w-full p-2 rounded"
             type="email"
@@ -67,12 +64,20 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
-          <p className="text-gray-400 text-sm mt-6">
-            By logging in, you agree to the Terms of Use and have read our
-            Privacy Policy.
-          </p>
+          {isFailedLogin && (
+            <p className="text-red-500 text-sm">Invalid email or password</p>
+          )}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => navigate("/reset-password")}
+              className="text-sm text-gray-400 hover:text-gray-300"
+            >
+              Forgot Password?
+            </button>
+          </div>
           <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-            Log In
+            Sign In
           </button>
           <div>or</div>
           <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">

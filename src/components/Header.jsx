@@ -24,13 +24,15 @@ export default function Header() {
       </div>
       <div className="flex justify-between items-center p-4 max-w-screen-lg mx-auto">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-4">
-          <button
-            onClick={handleClick}
-            name="/dashboard"
-            className="border-none bg-transparent text-slate-300"
-          >
-            Dashboard
-          </button>
+          {currentUser && (
+            <button
+              onClick={handleClick}
+              name="/dashboard"
+              className="border-none bg-transparent text-slate-300"
+            >
+              Dashboard
+            </button>
+          )}
           {currentUser && (
             <div>
               <button
