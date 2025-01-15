@@ -384,18 +384,22 @@ const CharacterSheet = () => {
 
                       {/* Skills */}
                       <div className="mb-4">
-                        <h4 className="text-slate-300 font-semibold mb-2">
+                        <h4 className="text-slate-300 font-semibold mb-2 text-center">
                           Skills
                         </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {char.skills.map((skill, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-slate-700 rounded-full text-slate-300"
-                            >
-                              {skill}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {char.skills.length > 0 ? (
+                            char.skills.map((skill, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 bg-slate-700 rounded-full text-slate-300"
+                              >
+                                {skill}
+                              </span>
+                            ))
+                          ) : (
+                            <div className="text-slate-400">No skills</div>
+                          )}
                         </div>
                       </div>
 
