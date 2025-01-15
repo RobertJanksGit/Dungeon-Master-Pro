@@ -131,6 +131,7 @@ const COLLECTIONS = {
   CHARACTERS: "characters",
   LOCATIONS: "locations",
   NPCS: "npcs",
+  INVENTORY: "inventory",
 };
 
 // Test Firestore connection
