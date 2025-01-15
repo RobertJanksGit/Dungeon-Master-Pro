@@ -67,14 +67,17 @@ const Login = () => {
           {isFailedLogin && (
             <p className="text-red-500 text-sm">Invalid email or password</p>
           )}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() => navigate("/reset-password")}
-              className="text-sm text-gray-400 hover:text-gray-300"
+          <div className="flex justify-center">
+            <a
+              href="/reset-password"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/reset-password");
+              }}
+              className="text-sm text-gray-400 hover:text-gray-300 cursor-pointer"
             >
               Forgot Password?
-            </button>
+            </a>
           </div>
           <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
             Sign In
