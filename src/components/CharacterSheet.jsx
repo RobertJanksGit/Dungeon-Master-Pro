@@ -138,6 +138,13 @@ const CharacterSheet = () => {
 
       console.log("Character created with ID:", docRef.id);
 
+      // Update local state with the new character
+      const newCharacter = {
+        id: docRef.id,
+        ...characterData,
+      };
+      setCharacters((prevCharacters) => [...prevCharacters, newCharacter]);
+
       // Show success message
       setMessage({
         type: "success",
