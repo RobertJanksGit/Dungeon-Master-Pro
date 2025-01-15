@@ -1,12 +1,13 @@
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -21,9 +22,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
 
 const login = async (
   email,
@@ -79,4 +80,42 @@ const logout = () => {
   }, 10);
 };
 
-export { login, signup, logout, auth, db };
+const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // First check if the document exists
+    const userDocRef = doc(db, "users", user.uid);
+
+    try {
+      await setDoc(
+        userDocRef,
+        {
+          prompt: [
+            {
+              role: "system",
+              content:
+                "You are the Dungeon Master in a game of Dungeons & Dragons. Your role is to craft an engaging fantasy story, narrate vivid descriptions, and respond to the player's actions, questions, and decisions in real time. Start by introducing the setting, characters, and current scenario, and wait for player input before continuing. As the story progresses, be creative, use dramatic flair, and always keep the player's experience at the center. Make sure to keep the atmosphere mysterious and adventurous. Adjust the storyline or challenges based on player responses, and prompt the player with options when needed. You're allowed to generate magical events, mythical creatures, and describe the environment with sensory details like sounds, sights, and smells. Encourage the player to explore, interact with characters, and make decisions that will shape their journey. Remember, you are the guide on an epic quest.",
+            },
+          ],
+          email: user.email,
+          createdAt: new Date(),
+          lastLogin: new Date(),
+        },
+        { merge: true }
+      );
+    } catch (firestoreError) {
+      console.error("Firestore error:", firestoreError);
+      // Still return true if auth was successful but Firestore failed
+      return true;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Google Sign In error:", error.message);
+    return false;
+  }
+};
+
+export { login, signup, logout, auth, db, signInWithGoogle };

@@ -1,6 +1,6 @@
 // src/components/Login.js
 import { useState } from "react";
-import { login } from "../firebaseConfig";
+import { login, signInWithGoogle } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo2.jpg";
 
@@ -12,6 +12,20 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setIsFailedLogin(true);
+      return;
+    }
+
+    // Check if password is not empty
+    if (!password.trim()) {
+      setIsFailedLogin(true);
+      return;
+    }
+
     const success = await login(
       email,
       setEmail,
@@ -30,6 +44,21 @@ const Login = () => {
 
   const handelSwitch = () => {
     navigate("/signup");
+  };
+
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const success = await signInWithGoogle();
+      if (success) {
+        navigate("/dashboard");
+      } else {
+        setIsFailedLogin(true);
+      }
+    } catch (error) {
+      console.error("Google sign in failed:", error);
+      setIsFailedLogin(true);
+    }
   };
 
   return (
@@ -83,8 +112,12 @@ const Login = () => {
             Sign In
           </button>
           <div>or</div>
-          <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-            Continue with Google
+          <button
+            type="button"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            onClick={handleGoogleSignIn}
+          >
+            Sign in with Google
           </button>
           <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
             Continue with Apple
