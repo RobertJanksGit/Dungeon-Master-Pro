@@ -1,4 +1,11 @@
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -125,5 +132,22 @@ const COLLECTIONS = {
   LOCATIONS: "locations",
   NPCS: "npcs",
 };
+
+// Test Firestore connection
+const testFirestore = async () => {
+  try {
+    const testDoc = await addDoc(collection(db, "test"), {
+      test: true,
+      timestamp: new Date().toISOString(),
+    });
+    console.log("Firestore connection test successful:", testDoc.id);
+    // Clean up test document
+    await deleteDoc(doc(db, "test", testDoc.id));
+  } catch (error) {
+    console.error("Firestore connection test failed:", error);
+  }
+};
+
+testFirestore();
 
 export { login, signup, logout, auth, db, signInWithGoogle, COLLECTIONS };

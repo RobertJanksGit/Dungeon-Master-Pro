@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -27,9 +26,9 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/characters" element={<CharacterSheet />} />
+              <Route path="/campaigns" element={<CampaignManager />} />
             </Route>
-            <Route path="/characters" element={<CharacterSheet />} />
-            <Route path="/campaigns" element={<CampaignManager />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>
