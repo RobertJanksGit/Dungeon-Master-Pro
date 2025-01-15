@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../firebaseConfig";
 import { useAuth } from "../authContext";
 import logo from "../assets/logo.jpg";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const navigate = useNavigate();

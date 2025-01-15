@@ -118,4 +118,12 @@ const signInWithGoogle = async () => {
   }
 };
 
-export { login, signup, logout, auth, db, signInWithGoogle };
+// Add these collections to your existing Firebase config
+const COLLECTIONS = {
+  CAMPAIGNS: "campaigns",
+  CHARACTERS: "characters",
+  LOCATIONS: "locations",
+  NPCS: "npcs",
+};
+
+export { login, signup, logout, auth, db, signInWithGoogle, COLLECTIONS };

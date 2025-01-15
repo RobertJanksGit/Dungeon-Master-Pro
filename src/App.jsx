@@ -12,6 +12,8 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./protectedRoute";
 import ResetPassword from "./pages/ResetPassword";
+import CharacterSheet from "./components/CharacterSheet";
+import CampaignManager from "./components/CampaignManager";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
+            <Route path="/characters" element={<CharacterSheet />} />
+            <Route path="/campaigns" element={<CampaignManager />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>
