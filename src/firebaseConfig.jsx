@@ -16,6 +16,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkfIFaW7T0Fxvnhe9Udc48rZKuIkEBPRY",
@@ -32,6 +33,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
+const storage = getStorage(firebaseApp);
 
 const login = async (
   email,
@@ -151,4 +153,13 @@ const testFirestore = async () => {
 
 testFirestore();
 
-export { login, signup, logout, auth, db, signInWithGoogle, COLLECTIONS };
+export {
+  login,
+  signup,
+  logout,
+  auth,
+  db,
+  storage,
+  signInWithGoogle,
+  COLLECTIONS,
+};

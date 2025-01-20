@@ -8,10 +8,13 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { useAuth } from "../authContext";
 import { COLLECTIONS } from "../firebaseConfig";
 import Header from "./Header";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebaseConfig";
 
 const CharacterSheet = () => {
   const { currentUser } = useAuth();
@@ -26,6 +29,7 @@ const CharacterSheet = () => {
     skills: [],
     inventory: [],
     background: "",
+    imageUrl: "",
     stats: {
       strength: 10,
       dexterity: 10,
@@ -159,6 +163,7 @@ const CharacterSheet = () => {
         skills: [],
         inventory: [],
         background: "",
+        imageUrl: "",
         stats: {
           strength: 10,
           dexterity: 10,
@@ -271,6 +276,93 @@ const CharacterSheet = () => {
     }
   };
 
+  const handleImageUpload = async (e, characterId = null) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setMessage({
+        type: "error",
+        content: "Please upload an image file",
+      });
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({
+        type: "error",
+        content: "Image must be less than 5MB",
+      });
+      return;
+    }
+
+    try {
+      setMessage({
+        type: "info",
+        content: "Uploading image...",
+      });
+
+      // Create a safe filename with proper extension
+      const fileExtension = file.name.split(".").pop().toLowerCase();
+      const safeFileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}.${fileExtension}`;
+
+      // Create storage reference
+      const storageRef = ref(storage, `character-avatars/${safeFileName}`);
+
+      // Set proper metadata
+      const metadata = {
+        contentType: file.type,
+        cacheControl: "public,max-age=31536000",
+      };
+
+      // Upload with metadata
+      const snapshot = await uploadBytes(storageRef, file, metadata);
+      console.log("Upload successful:", snapshot);
+
+      // Get the download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      if (characterId) {
+        // Update existing character
+        const characterRef = doc(db, COLLECTIONS.CHARACTERS, characterId);
+        await updateDoc(characterRef, {
+          imageUrl: downloadURL,
+        });
+
+        // Update local state
+        setCharacters(
+          characters.map((char) =>
+            char.id === characterId ? { ...char, imageUrl: downloadURL } : char
+          )
+        );
+      } else {
+        // Update new character form
+        setCharacter((prev) => ({
+          ...prev,
+          imageUrl: downloadURL,
+        }));
+      }
+
+      setMessage({
+        type: "success",
+        content: "Avatar uploaded successfully!",
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setMessage({
+        type: "error",
+        content:
+          error.code === "storage/unauthorized"
+            ? "You must be logged in to upload images"
+            : "Failed to upload avatar. Please try again.",
+      });
+    }
+  };
+
   return (
     <>
       <Header />
@@ -292,7 +384,7 @@ const CharacterSheet = () => {
                 >
                   <div className="p-4 cursor-pointer flex items-center space-x-4 hover:bg-slate-700 transition-colors">
                     {/* Character Avatar */}
-                    <div className="w-16 h-16 rounded-full bg-slate-600 flex-shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-slate-600 flex-shrink-0 relative group">
                       <img
                         src={char.imageUrl || "/default-avatar.png"}
                         alt={char.name}
@@ -301,6 +393,33 @@ const CharacterSheet = () => {
                           e.target.src = "/default-avatar.png";
                         }}
                       />
+                      <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleImageUpload(e, char.id)}
+                        />
+                        <svg
+                          className="w-6 h-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      </label>
                     </div>
 
                     {/* Basic Info */}
@@ -592,6 +711,56 @@ const CharacterSheet = () => {
                 rows="4"
                 className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
               />
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">
+                  Avatar:
+                </label>
+                <div className="flex items-center space-x-4">
+                  <div className="w-20 h-20 rounded-full bg-slate-600 relative group">
+                    <img
+                      src={character.imageUrl || "/default-avatar.png"}
+                      alt="Character avatar"
+                      className="w-full h-full rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.src = "/default-avatar.png";
+                      }}
+                    />
+                    <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </label>
+                  </div>
+                  <div className="text-sm text-slate-400">
+                    Click to upload character avatar
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button
