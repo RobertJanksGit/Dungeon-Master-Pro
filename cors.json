@@ -1,14 +1,20 @@
 [
   {
-    "origin": ["http://localhost:5174", "https://dungeon-master-pro.web.app"],
-    "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
+    "origin": [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:3000"
+    ],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
     "maxAgeSeconds": 3600,
     "responseHeader": [
       "Content-Type",
       "Authorization",
       "Content-Length",
       "User-Agent",
-      "x-goog-resumable"
+      "x-goog-resumable",
+      "x-goog-meta-*"
     ]
   }
 ]

@@ -2,11 +2,19 @@
   "hosting": {
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrite": [{ "source": "**", "destination": "/index.html" }],
+    "rewrite": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
     "predeploy": ["npm run build"],
-    "frameworksBackend": { "region": "us-central1" }
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
   },
-  "firestore": {
+      "npm run build"
+    ],
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
@@ -14,3 +22,4 @@
     "rules": "storage.rules"
   }
 }
+    "rules": "y"

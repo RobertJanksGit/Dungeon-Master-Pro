@@ -13,7 +13,12 @@ import {
 import { useAuth } from "../authContext";
 import { COLLECTIONS } from "../firebaseConfig";
 import Header from "./Header";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../firebaseConfig";
 
 const CharacterSheet = () => {
@@ -237,6 +242,31 @@ const CharacterSheet = () => {
     }
 
     try {
+      // Find the character to get its imageUrl before deletion
+      const characterToDelete = characters.find(
+        (char) => char.id === characterId
+      );
+
+      // Delete the character's image from Storage if it exists
+      if (characterToDelete?.imageUrl) {
+        try {
+          // Get the filename from the URL
+          const urlParts = characterToDelete.imageUrl.split("/");
+          const filename = urlParts[urlParts.length - 1];
+
+          // Create a reference to the image using the correct path
+          const imageRef = ref(
+            storage,
+            `character-avatars/${currentUser.uid}/${filename}`
+          );
+          await deleteObject(imageRef);
+          console.log("Character avatar deleted successfully");
+        } catch (error) {
+          console.error("Error deleting character avatar:", error);
+          // Continue with character deletion even if image deletion fails
+        }
+      }
+
       // Delete the character document
       await deleteDoc(doc(db, COLLECTIONS.CHARACTERS, characterId));
 
@@ -260,7 +290,7 @@ const CharacterSheet = () => {
 
       setMessage({
         type: "success",
-        content: "Character and associated inventory deleted successfully",
+        content: "Character and associated data deleted successfully",
       });
 
       // If the deleted character was expanded, collapse it
@@ -271,7 +301,7 @@ const CharacterSheet = () => {
       console.error("Error deleting character:", error);
       setMessage({
         type: "error",
-        content: "Failed to delete character and inventory",
+        content: "Failed to delete character and associated data",
       });
     }
   };
@@ -279,6 +309,14 @@ const CharacterSheet = () => {
   const handleImageUpload = async (e, characterId = null) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    if (!currentUser?.uid) {
+      setMessage({
+        type: "error",
+        content: "You must be logged in to upload images",
+      });
+      return;
+    }
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -306,23 +344,20 @@ const CharacterSheet = () => {
 
       // Create a safe filename with proper extension
       const fileExtension = file.name.split(".").pop().toLowerCase();
-      const safeFileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2)}.${fileExtension}`;
+      const timestamp = Date.now();
+      const randomString = Math.random().toString(36).substring(2);
+      const safeFileName = `${
+        characterId || "new"
+      }-${timestamp}-${randomString}.${fileExtension}`;
 
-      // Create storage reference
-      const storageRef = ref(storage, `character-avatars/${safeFileName}`);
+      // Create storage reference in character-avatars folder
+      const storageRef = ref(
+        storage,
+        `character-avatars/${currentUser.uid}/${safeFileName}`
+      );
 
-      // Set proper metadata
-      const metadata = {
-        contentType: file.type,
-        cacheControl: "public,max-age=31536000",
-      };
-
-      // Upload with metadata
-      const snapshot = await uploadBytes(storageRef, file, metadata);
-      console.log("Upload successful:", snapshot);
-
+      // Upload file
+      const snapshot = await uploadBytes(storageRef, file);
       // Get the download URL
       const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -331,6 +366,7 @@ const CharacterSheet = () => {
         const characterRef = doc(db, COLLECTIONS.CHARACTERS, characterId);
         await updateDoc(characterRef, {
           imageUrl: downloadURL,
+          updatedAt: new Date().toISOString(),
         });
 
         // Update local state
@@ -349,7 +385,7 @@ const CharacterSheet = () => {
 
       setMessage({
         type: "success",
-        content: "Avatar uploaded successfully!",
+        content: "Character avatar uploaded successfully!",
       });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -358,7 +394,7 @@ const CharacterSheet = () => {
         content:
           error.code === "storage/unauthorized"
             ? "You must be logged in to upload images"
-            : "Failed to upload avatar. Please try again.",
+            : `Failed to upload avatar: ${error.message}`,
       });
     }
   };

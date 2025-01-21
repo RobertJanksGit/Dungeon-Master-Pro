@@ -1,17 +1,9 @@
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  collection,
-  addDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
@@ -22,7 +14,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBkfIFaW7T0Fxvnhe9Udc48rZKuIkEBPRY",
   authDomain: "dungeon-master-pro.firebaseapp.com",
   projectId: "dungeon-master-pro",
-  storageBucket: "dungeon-master-pro.appspot.com",
+  storageBucket: "dungeon-master-pro.firebasestorage.app",
   messagingSenderId: "670514258390",
   appId: "1:670514258390:web:4d85ee0d7e44c689400477",
   measurementId: "G-P15F99BHYE",
@@ -48,9 +40,8 @@ const login = async (
     setPassword("");
     setIsFailedLogin(false);
     return true;
-  } catch (error) {
+  } catch {
     setIsFailedLogin(true);
-    console.error("Login error:", error.message);
     return false;
   }
 };
@@ -71,15 +62,13 @@ const signup = async (email, setEmail, password, setPassword) => {
         {
           role: "system",
           content:
-            "You are the Dungeon Master in a game of Dungeons & Dragons. Your role is to craft an engaging fantasy story, narrate vivid descriptions, and respond to the player’s actions, questions, and decisions in real time. Start by introducing the setting, characters, and current scenario, and wait for player input before continuing. As the story progresses, be creative, use dramatic flair, and always keep the player’s experience at the center. Make sure to keep the atmosphere mysterious and adventurous. Adjust the storyline or challenges based on player responses, and prompt the player with options when needed. You’re allowed to generate magical events, mythical creatures, and describe the environment with sensory details like sounds, sights, and smells. Encourage the player to explore, interact with characters, and make decisions that will shape their journey. Remember, you are the guide on an epic quest.",
+            "You are the Dungeon Master in a game of Dungeons & Dragons. Your role is to craft an engaging fantasy story, narrate vivid descriptions, and respond to the player's actions, questions, and decisions in real time. Start by introducing the setting, characters, and current scenario, and wait for player input before continuing. As the story progresses, be creative, use dramatic flair, and always keep the player's experience at the center. Make sure to keep the atmosphere mysterious and adventurous. Adjust the storyline or challenges based on player responses, and prompt the player with options when needed. You're allowed to generate magical events, mythical creatures, and describe the environment with sensory details like sounds, sights, and smells. Encourage the player to explore, interact with characters, and make decisions that will shape their journey. Remember, you are the guide on an epic quest.",
         },
       ],
       createdAt: new Date(),
     });
-
-    console.log("User registered and Firestore document created!");
-  } catch (error) {
-    console.error("Signup error", error.message);
+  } catch {
+    // Handle error silently
   }
 };
 
@@ -114,15 +103,12 @@ const signInWithGoogle = async () => {
         },
         { merge: true }
       );
-    } catch (firestoreError) {
-      console.error("Firestore error:", firestoreError);
-      // Still return true if auth was successful but Firestore failed
+    } catch {
       return true;
     }
 
     return true;
-  } catch (error) {
-    console.error("Google Sign In error:", error.message);
+  } catch {
     return false;
   }
 };
@@ -135,23 +121,6 @@ const COLLECTIONS = {
   NPCS: "npcs",
   INVENTORY: "inventory",
 };
-
-// Test Firestore connection
-const testFirestore = async () => {
-  try {
-    const testDoc = await addDoc(collection(db, "test"), {
-      test: true,
-      timestamp: new Date().toISOString(),
-    });
-    console.log("Firestore connection test successful:", testDoc.id);
-    // Clean up test document
-    await deleteDoc(doc(db, "test", testDoc.id));
-  } catch (error) {
-    console.error("Firestore connection test failed:", error);
-  }
-};
-
-testFirestore();
 
 export {
   login,
