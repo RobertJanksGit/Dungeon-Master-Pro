@@ -56,6 +56,13 @@ export default function Header() {
               >
                 Maps
               </button>
+              <button
+                onClick={handleClick}
+                name="/settings"
+                className="border-none bg-transparent text-slate-300"
+              >
+                Settings
+              </button>
             </div>
           )}
         </div>

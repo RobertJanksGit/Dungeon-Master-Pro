@@ -13,6 +13,7 @@ import ProtectedRoute from "./protectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import CharacterSheet from "./components/CharacterSheet";
 import CampaignManager from "./components/CampaignManager";
+import Settings from "./components/Settings";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/characters" element={<CharacterSheet />} />
               <Route path="/campaigns" element={<CampaignManager />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

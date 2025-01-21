@@ -2,7 +2,7 @@
   "hosting": {
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrite": [
+    "rewrites": [
       {
         "source": "**",
         "destination": "/index.html"
@@ -13,8 +13,7 @@
       "region": "us-central1"
     }
   },
-      "npm run build"
-    ],
+  "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
@@ -22,4 +21,3 @@
     "rules": "storage.rules"
   }
 }
-    "rules": "y"
