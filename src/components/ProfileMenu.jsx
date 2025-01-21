@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../authContext";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { db, logout } from "../firebaseConfig";
 import DefaultAvatar from "./DefaultAvatar";
 
 const ProfileMenu = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -35,13 +35,10 @@ const ProfileMenu = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("Failed to log out", error);
-    }
+  const handleLogout = () => {
+    setIsOpen(false);
+    logout();
+    navigate("/");
   };
 
   return (

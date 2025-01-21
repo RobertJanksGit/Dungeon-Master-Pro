@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../authContext";
-import logo from "../assets/logo.jpg";
 import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
@@ -14,9 +13,6 @@ export default function Header() {
 
   return (
     <div>
-      <div className="flex justify-center items-center mb-4">
-        <img src={logo} className="size-1/2" alt="Logo" />
-      </div>
       <div className="flex justify-between items-center p-4 max-w-screen-lg mx-auto">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-4">
           {currentUser && (
