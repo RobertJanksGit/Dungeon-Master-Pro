@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { logout } from "../firebaseConfig";
 import { useAuth } from "../authContext";
 import logo from "../assets/logo.jpg";
+import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -9,14 +9,9 @@ export default function Header() {
 
   const handleClick = (e) => {
     e.preventDefault();
-    const { name } = e.target;
-    if (name === "/logout") {
-      logout();
-      navigate("/");
-    } else {
-      navigate(name);
-    }
+    navigate(e.target.name);
   };
+
   return (
     <div>
       <div className="flex justify-center items-center mb-4">
@@ -56,13 +51,6 @@ export default function Header() {
               >
                 Maps
               </button>
-              <button
-                onClick={handleClick}
-                name="/settings"
-                className="border-none bg-transparent text-slate-300"
-              >
-                Settings
-              </button>
             </div>
           )}
         </div>
@@ -84,15 +72,7 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          <div className="flex space-x-4">
-            <button
-              onClick={handleClick}
-              name="/logout"
-              className="border-none bg-transparent text-slate-300"
-            >
-              Log Out
-            </button>
-          </div>
+          <ProfileMenu />
         )}
       </div>
     </div>
