@@ -28,6 +28,8 @@ const CharacterSheet = () => {
   const [loading, setLoading] = useState(true);
   const [character, setCharacter] = useState({
     name: "",
+    race: "",
+    subrace: "",
     class: "",
     level: 1,
     skills: [],
@@ -42,9 +44,38 @@ const CharacterSheet = () => {
       wisdom: 10,
       charisma: 10,
     },
+    isCustomRace: false,
+    isCustomClass: false,
   });
 
   const [newSkill, setNewSkill] = useState("");
+
+  const races = {
+    Human: [],
+    Elf: ["High Elf", "Wood Elf", "Drow"],
+    Dwarf: ["Hill Dwarf", "Mountain Dwarf"],
+    Halfling: ["Lightfoot", "Stout"],
+    "Half-Orc": [],
+    "Half-Elf": [],
+    Gnome: ["Forest", "Rock"],
+    Dragonborn: [],
+    Tiefling: [],
+  };
+
+  const classes = [
+    "Barbarian",
+    "Bard",
+    "Cleric",
+    "Druid",
+    "Fighter",
+    "Monk",
+    "Paladin",
+    "Ranger",
+    "Rogue",
+    "Sorcerer",
+    "Warlock",
+    "Wizard",
+  ];
 
   // Fetch characters on component mount
   useEffect(() => {
@@ -162,6 +193,8 @@ const CharacterSheet = () => {
       // Reset form
       setCharacter({
         name: "",
+        race: "",
+        subrace: "",
         class: "",
         level: 1,
         skills: [],
@@ -176,6 +209,8 @@ const CharacterSheet = () => {
           wisdom: 10,
           charisma: 10,
         },
+        isCustomRace: false,
+        isCustomClass: false,
       });
       setNewSkill("");
     } catch (error) {
@@ -398,6 +433,60 @@ const CharacterSheet = () => {
     }
   };
 
+  const handleRaceChange = (e) => {
+    const selectedRace = e.target.value;
+    if (selectedRace === "custom") {
+      setCharacter({
+        ...character,
+        race: "",
+        isCustomRace: true,
+        subrace: "",
+      });
+    } else {
+      setCharacter({
+        ...character,
+        race: selectedRace,
+        isCustomRace: false,
+        subrace: "",
+      });
+    }
+  };
+
+  const handleCustomRaceChange = (e) => {
+    const value = e.target.value;
+    setCharacter({
+      ...character,
+      race: value,
+      isCustomRace: true,
+    });
+  };
+
+  const handleClassChange = (e) => {
+    const selectedClass = e.target.value;
+    if (selectedClass === "custom") {
+      setCharacter({
+        ...character,
+        class: "",
+        isCustomClass: true,
+      });
+    } else {
+      setCharacter({
+        ...character,
+        class: selectedClass,
+        isCustomClass: false,
+      });
+    }
+  };
+
+  const handleCustomClassChange = (e) => {
+    const value = e.target.value;
+    setCharacter({
+      ...character,
+      class: value,
+      isCustomClass: true,
+    });
+  };
+
   return (
     <>
       <div className="max-w-4xl mx-auto p-6">
@@ -466,6 +555,10 @@ const CharacterSheet = () => {
                       </h3>
                       <p className="text-slate-400">
                         Level {char.level} {char.class}
+                      </p>
+                      <p className="text-slate-400">
+                        {char.race}
+                        {char.subrace ? ` (${char.subrace})` : ""}
                       </p>
                     </div>
 
@@ -638,18 +731,99 @@ const CharacterSheet = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1">
-                    Class:
+                    Race:
                   </label>
-                  <input
-                    type="text"
-                    value={character.class}
-                    onChange={(e) =>
-                      setCharacter({ ...character, class: e.target.value })
-                    }
+                  <select
+                    value={character.isCustomRace ? "custom" : character.race}
+                    onChange={handleRaceChange}
                     className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
                     required
-                  />
+                  >
+                    <option value="">Select a race</option>
+                    {Object.keys(races).map((race) => (
+                      <option key={race} value={race}>
+                        {race}
+                      </option>
+                    ))}
+                    <option value="custom">Custom Race</option>
+                  </select>
                 </div>
+                {character.isCustomRace && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">
+                      Custom Race Name:
+                    </label>
+                    <input
+                      type="text"
+                      value={character.race}
+                      onChange={handleCustomRaceChange}
+                      placeholder="Enter custom race name"
+                      className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                      required
+                    />
+                  </div>
+                )}
+                {!character.isCustomRace &&
+                  character.race &&
+                  races[character.race]?.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-1">
+                        Subrace:
+                      </label>
+                      <select
+                        value={character.subrace}
+                        onChange={(e) =>
+                          setCharacter({
+                            ...character,
+                            subrace: e.target.value,
+                          })
+                        }
+                        className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                        required
+                      >
+                        <option value="">Select a subrace</option>
+                        {races[character.race].map((subrace) => (
+                          <option key={subrace} value={subrace}>
+                            {subrace}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    Class:
+                  </label>
+                  <select
+                    value={character.isCustomClass ? "custom" : character.class}
+                    onChange={handleClassChange}
+                    className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                    required
+                  >
+                    <option value="">Select a class</option>
+                    {classes.map((className) => (
+                      <option key={className} value={className}>
+                        {className}
+                      </option>
+                    ))}
+                    <option value="custom">Custom Class</option>
+                  </select>
+                </div>
+                {character.isCustomClass && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">
+                      Custom Class Name:
+                    </label>
+                    <input
+                      type="text"
+                      value={character.class}
+                      onChange={handleCustomClassChange}
+                      placeholder="Enter custom class name"
+                      className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                      required
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1">
                     Level:
