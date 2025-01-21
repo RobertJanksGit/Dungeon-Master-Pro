@@ -12,7 +12,6 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "../authContext";
 import { COLLECTIONS } from "../firebaseConfig";
-import Header from "./Header";
 import {
   ref,
   uploadBytes,
@@ -401,7 +400,6 @@ const CharacterSheet = () => {
 
   return (
     <>
-      <Header />
       <div className="max-w-4xl mx-auto p-6">
         {/* Characters List */}
         <div className="mb-8">

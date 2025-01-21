@@ -14,55 +14,20 @@ export default function Header() {
   return (
     <div>
       <div className="flex justify-between items-center p-4 max-w-screen-lg mx-auto">
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-4">
-          {currentUser && (
-            <button
-              onClick={handleClick}
-              name="/dashboard"
-              className="border-none bg-transparent text-slate-300"
-            >
-              Dashboard
-            </button>
-          )}
-          {currentUser && (
-            <div>
-              <button
-                onClick={handleClick}
-                name="/characters"
-                className="border-none bg-transparent text-slate-300"
-              >
-                Characters
-              </button>
-              <button
-                onClick={handleClick}
-                name="/campaigns"
-                className="border-none bg-transparent text-slate-300"
-              >
-                Campaigns
-              </button>
-              <button
-                onClick={handleClick}
-                name="/maps"
-                className="border-none bg-transparent text-slate-300"
-              >
-                Maps
-              </button>
-            </div>
-          )}
-        </div>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-4"></div>
         {!currentUser ? (
           <div className="flex space-x-4">
             <button
               onClick={handleClick}
               name="/login"
-              className="border-none bg-transparent text-slate-300"
+              className="border-none bg-transparent text-slate-300 hover:text-white transition-colors"
             >
               Sign In
             </button>
             <button
               onClick={handleClick}
               name="/signup"
-              className="border-none bg-transparent text-slate-300"
+              className="border-none bg-transparent text-slate-300 hover:text-white transition-colors"
             >
               Register
             </button>
