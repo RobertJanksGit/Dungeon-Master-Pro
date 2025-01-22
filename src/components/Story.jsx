@@ -20,6 +20,7 @@ export default function Story() {
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedStory, setSelectedStory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResponding, setIsResponding] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
 
   const loadingMessages = [
@@ -249,6 +250,7 @@ Please begin by introducing the current scenario and setting the scene for our a
     };
 
     setChatHistory((prev) => [...prev, newMessage]);
+    setIsResponding(true);
 
     try {
       // Fetch the current prompt from Firestore
@@ -302,19 +304,16 @@ Please begin by introducing the current scenario and setting the scene for our a
 
       let aiResponse;
       if (data.role && data.content) {
-        // Handle direct response format
         aiResponse = {
-          role: data.role.toLowerCase(), // Normalize role to lowercase
+          role: data.role.toLowerCase(),
           content: data.content,
         };
       } else if (!data.message && data.choices?.[0]?.message?.content) {
-        // Handle OpenAI format
         aiResponse = {
           role: "assistant",
           content: data.choices[0].message.content,
         };
       } else if (data.message) {
-        // Handle custom format
         aiResponse = {
           role: "assistant",
           content: data.message,
@@ -348,6 +347,8 @@ Please begin by introducing the current scenario and setting the scene for our a
         prompt: [...currentPrompt, newMessage, errorMessage],
         updatedAt: new Date().toISOString(),
       });
+    } finally {
+      setIsResponding(false);
     }
   };
 
@@ -359,6 +360,7 @@ Please begin by introducing the current scenario and setting the scene for our a
         setChatHistory={setChatHistory}
         sendMessage={sendMessage}
         isLoading={isLoading}
+        isResponding={isResponding}
         loadingMessage={loadingMessage}
       />
     </div>

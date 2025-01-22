@@ -21,6 +21,7 @@ const Stories = ({
   setChatHistory,
   sendMessage,
   isLoading,
+  isResponding,
   loadingMessage,
 }) => {
   const { currentUser } = useAuth();
@@ -266,26 +267,48 @@ const Stories = ({
                     </div>
                   </div>
                 ) : (
-                  chatHistory
-                    .filter((msg) => msg.role !== "system")
-                    .map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`flex ${
-                          msg.role === "user" ? "justify-end" : "justify-start"
-                        }`}
-                      >
+                  <>
+                    {chatHistory
+                      .filter((msg) => msg.role !== "system")
+                      .map((msg, index) => (
                         <div
-                          className={`max-w-[80%] rounded-lg p-3 prose prose-invert ${
+                          key={index}
+                          className={`flex ${
                             msg.role === "user"
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-600 text-slate-200"
+                              ? "justify-end"
+                              : "justify-start"
                           }`}
                         >
-                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                          <div
+                            className={`max-w-[80%] rounded-lg p-3 prose prose-invert ${
+                              msg.role === "user"
+                                ? "bg-blue-600 text-white"
+                                : "bg-slate-600 text-slate-200"
+                            }`}
+                          >
+                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                          </div>
+                        </div>
+                      ))}
+                    {isResponding && (
+                      <div className="flex justify-start">
+                        <div className="bg-slate-600 rounded-lg p-3 flex items-center space-x-2">
+                          <div
+                            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                            style={{ animationDelay: "0ms" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                            style={{ animationDelay: "150ms" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                            style={{ animationDelay: "300ms" }}
+                          ></div>
                         </div>
                       </div>
-                    ))
+                    )}
+                  </>
                 )}
                 <div ref={messagesEndRef} />
               </div>
@@ -304,16 +327,16 @@ const Stories = ({
                 }}
                 placeholder="Type your message..."
                 className="flex-1 p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
-                disabled={isLoading}
+                disabled={isLoading || isResponding}
               />
               <button
                 onClick={handleSendMessage}
                 className={`px-4 py-2 bg-blue-600 text-white rounded-md ${
-                  isLoading
+                  isLoading || isResponding
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
                 }`}
-                disabled={isLoading}
+                disabled={isLoading || isResponding}
               >
                 Send
               </button>
@@ -630,6 +653,7 @@ Stories.propTypes = {
   setChatHistory: PropTypes.func,
   sendMessage: PropTypes.func,
   isLoading: PropTypes.bool,
+  isResponding: PropTypes.bool,
   loadingMessage: PropTypes.string,
 };
 
@@ -639,6 +663,7 @@ Stories.defaultProps = {
   setChatHistory: () => {},
   sendMessage: () => {},
   isLoading: false,
+  isResponding: false,
   loadingMessage: "",
 };
 
