@@ -155,20 +155,56 @@ Please begin by introducing the current scenario and setting the scene for our a
             role: "system",
             content: basePrompt,
           },
-          {
-            role: "assistant",
-            content:
-              "I'm ready to begin our adventure. Let me set the scene based on your campaign's world and characters...",
-          },
         ];
 
+        // Make initial API call to get the first response
+        const AI_ENDPOINT =
+          (window.env?.REACT_APP_AI_ENDPOINT ||
+            "https://dm-openai-fetch-af2d86bed568.herokuapp.com") + "/api";
+
+        const response = await fetch(AI_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(initialPrompt),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to get AI response: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let aiResponse;
+        if (data.role && data.content) {
+          aiResponse = {
+            role: data.role.toLowerCase(),
+            content: data.content,
+          };
+        } else if (!data.message && data.choices?.[0]?.message?.content) {
+          aiResponse = {
+            role: "assistant",
+            content: data.choices[0].message.content,
+          };
+        } else if (data.message) {
+          aiResponse = {
+            role: "assistant",
+            content: data.message,
+          };
+        } else {
+          throw new Error("Unexpected response format from AI service");
+        }
+
+        const fullPrompt = [...initialPrompt, aiResponse];
+
         await updateDoc(storyRef, {
-          prompt: initialPrompt,
+          prompt: fullPrompt,
           updatedAt: new Date().toISOString(),
         });
 
         // Initialize chat history
-        setChatHistory(initialPrompt);
+        setChatHistory(fullPrompt);
       }
 
       setSelectedStory(story);
