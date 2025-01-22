@@ -20,6 +20,8 @@ const Stories = ({
   chatHistory,
   setChatHistory,
   sendMessage,
+  isLoading,
+  loadingMessage,
 }) => {
   const { currentUser } = useAuth();
   const [stories, setStories] = useState([]);
@@ -254,26 +256,37 @@ const Stories = ({
           <div className="bg-slate-800 rounded-lg p-6">
             <div className="bg-slate-700 rounded-lg p-4 mb-4 h-[600px] overflow-y-auto">
               <div className="space-y-4">
-                {chatHistory
-                  .filter((msg) => msg.role !== "system")
-                  .map((msg, index) => (
-                    <div
-                      key={index}
-                      className={`flex ${
-                        msg.role === "user" ? "justify-end" : "justify-start"
-                      }`}
-                    >
+                {isLoading ? (
+                  <div className="flex justify-center items-center h-full">
+                    <div className="text-center space-y-4">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                      <p className="text-slate-200 text-lg animate-pulse">
+                        {loadingMessage}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  chatHistory
+                    .filter((msg) => msg.role !== "system")
+                    .map((msg, index) => (
                       <div
-                        className={`max-w-[80%] rounded-lg p-3 prose prose-invert ${
-                          msg.role === "user"
-                            ? "bg-blue-600 text-white"
-                            : "bg-slate-600 text-slate-200"
+                        key={index}
+                        className={`flex ${
+                          msg.role === "user" ? "justify-end" : "justify-start"
                         }`}
                       >
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        <div
+                          className={`max-w-[80%] rounded-lg p-3 prose prose-invert ${
+                            msg.role === "user"
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-600 text-slate-200"
+                          }`}
+                        >
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                )}
                 <div ref={messagesEndRef} />
               </div>
             </div>
@@ -291,10 +304,16 @@ const Stories = ({
                 }}
                 placeholder="Type your message..."
                 className="flex-1 p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                disabled={isLoading}
               />
               <button
                 onClick={handleSendMessage}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className={`px-4 py-2 bg-blue-600 text-white rounded-md ${
+                  isLoading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                }`}
+                disabled={isLoading}
               >
                 Send
               </button>
@@ -610,6 +629,8 @@ Stories.propTypes = {
   ),
   setChatHistory: PropTypes.func,
   sendMessage: PropTypes.func,
+  isLoading: PropTypes.bool,
+  loadingMessage: PropTypes.string,
 };
 
 Stories.defaultProps = {
@@ -617,6 +638,8 @@ Stories.defaultProps = {
   chatHistory: [],
   setChatHistory: () => {},
   sendMessage: () => {},
+  isLoading: false,
+  loadingMessage: "",
 };
 
 export default Stories;

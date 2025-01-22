@@ -19,6 +19,30 @@ export default function Story() {
   const [characters, setCharacters] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedStory, setSelectedStory] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+
+  const loadingMessages = [
+    "Collecting campaign data...",
+    "Creating world...",
+    "Gathering character information...",
+    "Weaving the story...",
+    "Preparing the adventure...",
+    "Setting the scene...",
+  ];
+
+  useEffect(() => {
+    let messageInterval;
+    if (isLoading) {
+      let index = 0;
+      setLoadingMessage(loadingMessages[0]);
+      messageInterval = setInterval(() => {
+        index = (index + 1) % loadingMessages.length;
+        setLoadingMessage(loadingMessages[index]);
+      }, 2000);
+    }
+    return () => clearInterval(messageInterval);
+  }, [isLoading]);
 
   // Fetch campaigns and characters on component mount
   useEffect(() => {
@@ -58,6 +82,7 @@ export default function Story() {
   }, [currentUser]);
 
   const selectStory = async (story) => {
+    setIsLoading(true);
     try {
       // Find the campaign and characters
       const campaign = campaigns.find((c) => c.id === story.campaignId);
@@ -210,6 +235,8 @@ Please begin by introducing the current scenario and setting the scene for our a
       setSelectedStory(story);
     } catch (error) {
       console.error("Error setting up story context:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -331,6 +358,8 @@ Please begin by introducing the current scenario and setting the scene for our a
         chatHistory={chatHistory}
         setChatHistory={setChatHistory}
         sendMessage={sendMessage}
+        isLoading={isLoading}
+        loadingMessage={loadingMessage}
       />
     </div>
   );
