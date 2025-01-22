@@ -12,11 +12,16 @@ service cloud.firestore {
       allow read, write: if isAuthenticated();
     }
 
+    // Stories collection
+    match /stories/{storyId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
     // Characters collection
     match /characters/{characterId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
 
     // Inventory collection (changed from items)
@@ -24,6 +29,12 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // Campaigns collection
+    match /campaigns/{campaignId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
 
     // Users collection

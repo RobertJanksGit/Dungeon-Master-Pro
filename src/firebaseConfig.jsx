@@ -120,6 +120,7 @@ const COLLECTIONS = {
   LOCATIONS: "locations",
   NPCS: "npcs",
   INVENTORY: "inventory",
+  STORIES: "stories",
 };
 
 export {
