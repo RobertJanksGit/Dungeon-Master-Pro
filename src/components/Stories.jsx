@@ -491,11 +491,17 @@ const Stories = ({
                         characterIds: [], // Reset character selection when campaign changes
                       });
                     }}
-                    className="mt-1 block w-full rounded-md border-slate-600 bg-slate-700 text-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-slate-600 bg-slate-700 text-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 text-lg"
                   >
-                    <option value="">Select a campaign</option>
+                    <option value="" className="text-lg p-2">
+                      Select a campaign
+                    </option>
                     {campaigns.map((campaign) => (
-                      <option key={campaign.id} value={campaign.id}>
+                      <option
+                        key={campaign.id}
+                        value={campaign.id}
+                        className="text-lg p-2"
+                      >
                         {campaign.name} - {campaign.description}
                       </option>
                     ))}
